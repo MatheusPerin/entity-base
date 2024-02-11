@@ -6,6 +6,7 @@ import br.com.matheusperin.entitybase.exception.EntityExceptionValidator;
 import br.com.matheusperin.entitybase.persit.EntityPersistController;
 import br.com.matheusperin.entitybase.utils.GetGenericTypeUtil;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaQuery;
 
@@ -13,10 +14,13 @@ import java.util.List;
 
 public abstract class EntityRepository<T extends EntityBase> {
 
+    @Inject
+    private EntityManager em;
+
     private final EntityPersistController persistController;
 
     public EntityRepository() {
-        this.persistController = EntityPersistController.create(CDI.current().select(EntityManager.class).get());
+        this.persistController = EntityPersistController.create(em);
     }
 
     public Class<T> getEntityClass() {
@@ -44,7 +48,7 @@ public abstract class EntityRepository<T extends EntityBase> {
     }
 
     public EntityManager getEntityManager() {
-        return persistController.getEntityManager();
+        return em;
     }
 
     public List<T> findAll() {

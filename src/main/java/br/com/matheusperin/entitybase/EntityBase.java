@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @MappedSuperclass
 @Getter @Setter
-public abstract class EntityBase implements Cloneable {
+public abstract class EntityBase {
 
     @Id
     @Column(name = "id")

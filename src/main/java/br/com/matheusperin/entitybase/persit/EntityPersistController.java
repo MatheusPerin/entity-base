@@ -3,7 +3,7 @@ package br.com.matheusperin.entitybase.persit;
 import br.com.matheusperin.entitybase.EntityBase;
 import br.com.matheusperin.entitybase.enums.EntityPersistStage;
 import br.com.matheusperin.entitybase.exception.EntityExceptionPersist;
-import br.com.matheusperin.entitybase.exception.EntityExceptionValidator;
+import br.com.matheusperin.entitybase.exception.EntityRuntimeExceptionValidator;
 import br.com.matheusperin.entitybase.persit.child.*;
 import jakarta.persistence.EntityManager;
 
@@ -27,14 +27,14 @@ public class EntityPersistController {
         return em;
     }
 
-    public <T extends EntityBase> T save(T entity) throws EntityExceptionPersist, EntityExceptionValidator {
+    public <T extends EntityBase> T save(T entity) throws EntityExceptionPersist, EntityRuntimeExceptionValidator {
         if (Objects.nonNull(entity.getId()))
             return update(entity);
 
         return insert(entity);
     }
 
-    public <T extends EntityBase> T insert(T entity) throws EntityExceptionPersist, EntityExceptionValidator {
+    public <T extends EntityBase> T insert(T entity) throws EntityExceptionPersist {
         EntityPersistValidate.validateNullEntity(entity);
 
         try {
@@ -45,7 +45,7 @@ public class EntityPersistController {
             childrenProcess.process(entity, EntityChildrenCallBackSetParent.create());
             childrenProcess.process(entity, EntityChildrenCallBackInsertParent.create(this));
             entity.eventsController().onInsert(entity, EntityPersistStage.AFTER);
-        } catch (EntityExceptionValidator exceptionValidator) {
+        } catch (EntityRuntimeExceptionValidator exceptionValidator) {
             throw exceptionValidator;
         } catch (Exception e) {
             throw new EntityExceptionPersist(e);
@@ -54,13 +54,13 @@ public class EntityPersistController {
         return entity;
     }
 
-    public <T extends EntityBase> T update(T entity) throws EntityExceptionPersist, EntityExceptionValidator {
+    public <T extends EntityBase> T update(T entity) throws EntityExceptionPersist {
         EntityPersistValidate.validateNonNullEntityId(entity);
 
         return update(entity, findById(entity.getClass(), entity.getId()));
     }
 
-    public <T extends EntityBase> T update(T entity, T oldEntity) throws EntityExceptionPersist, EntityExceptionValidator {
+    public <T extends EntityBase> T update(T entity, T oldEntity) throws EntityExceptionPersist {
         EntityPersistValidate.validateNonNullEntityId(entity);
 
         try {
@@ -72,7 +72,7 @@ public class EntityPersistController {
             childrenProcess.process(entity, EntityChildrenCallBackSetParent.create());
             childrenProcess.process(entity, EntityChildrenCallBackUpdateParent.create(oldEntity, this));
             entity.eventsController().onUpdate(entity, oldEntity, EntityPersistStage.AFTER);
-        } catch (EntityExceptionValidator exceptionValidator) {
+        } catch (EntityRuntimeExceptionValidator exceptionValidator) {
             throw exceptionValidator;
         } catch (Exception e) {
             throw new EntityExceptionPersist(e);
@@ -81,7 +81,7 @@ public class EntityPersistController {
         return entity;
     }
 
-    public <T extends EntityBase> void remove(T entity) throws EntityExceptionPersist, EntityExceptionValidator {
+    public <T extends EntityBase> void remove(T entity) throws EntityExceptionPersist {
         EntityPersistValidate.validateNonNullEntityId(entity);
 
         try {
@@ -92,14 +92,14 @@ public class EntityPersistController {
             em.remove(entity);
             em.flush();
             entity.eventsController().onRemove(entity, EntityPersistStage.AFTER);
-        } catch (EntityExceptionValidator exceptionValidator) {
+        } catch (EntityRuntimeExceptionValidator exceptionValidator) {
             throw exceptionValidator;
         } catch (Exception e) {
             throw new EntityExceptionPersist(e);
         }
     }
 
-    public <T extends EntityBase> void removeById(Class<T> classEntity, Long id) throws EntityExceptionValidator, EntityExceptionPersist {
+    public <T extends EntityBase> void removeById(Class<T> classEntity, Long id) throws EntityRuntimeExceptionValidator, EntityExceptionPersist {
         remove(findById(classEntity, id));
     }
 

@@ -3,7 +3,7 @@ package br.com.matheusperin.entitybase.validator;
 import br.com.matheusperin.entitybase.EntityBase;
 import br.com.matheusperin.entitybase.event.EntityEventUpdate;
 import br.com.matheusperin.entitybase.exception.EntityExceptionPersist;
-import br.com.matheusperin.entitybase.exception.EntityExceptionValidator;
+import br.com.matheusperin.entitybase.exception.EntityRuntimeExceptionValidator;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 
@@ -48,21 +48,21 @@ public class EntityValidatorController {
         }
     }
 
-    public void onInsert(EntityBase entity) throws EntityExceptionValidator {
+    public void onInsert(EntityBase entity) throws EntityRuntimeExceptionValidator {
         List<EntityValidatorInsert<EntityBase>> validatorsInsert = getValidatorsByType(EntityValidatorInsert.class);
 
         for (EntityValidatorInsert<EntityBase> validator: validatorsInsert)
             validator.onInsert(entity);
     }
 
-    public void onRemove(EntityBase entity) throws EntityExceptionValidator {
+    public void onRemove(EntityBase entity) throws EntityRuntimeExceptionValidator {
         List<EntityValidatorRemove<EntityBase>> eventsRemove = getValidatorsByType(EntityValidatorRemove.class);
 
         for (EntityValidatorRemove<EntityBase> validator: eventsRemove)
             validator.onRemove(entity);
     }
 
-    public void onUpdate(EntityBase entity, EntityBase oldEntity) throws EntityExceptionValidator {
+    public void onUpdate(EntityBase entity, EntityBase oldEntity) throws EntityRuntimeExceptionValidator {
         List<EntityValidatorUpdate<EntityBase>> eventsUpdate = getValidatorsByType(EntityEventUpdate.class);
 
         for (EntityValidatorUpdate<EntityBase> validator: eventsUpdate)

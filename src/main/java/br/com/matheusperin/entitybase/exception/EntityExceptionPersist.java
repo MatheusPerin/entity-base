@@ -2,7 +2,7 @@ package br.com.matheusperin.entitybase.exception;
 
 public class EntityExceptionPersist extends EntityException {
 
-    public EntityExceptionPersist(Exception exception) {
+    public EntityExceptionPersist(Throwable exception) {
         super(exception);
     }
 

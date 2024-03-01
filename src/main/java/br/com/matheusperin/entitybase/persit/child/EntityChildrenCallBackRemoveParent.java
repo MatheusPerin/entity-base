@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class EntityChildrenCallBackRemoveParent implements EntityChildrenCallBack{
+public class EntityChildrenCallBackRemoveParent implements EntityChildrenCallBack {
 
     private final EntityPersistController persistController;
 

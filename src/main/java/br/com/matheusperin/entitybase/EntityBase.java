@@ -18,11 +18,6 @@ public abstract class EntityBase {
     protected Long id;
 
     @Override
-    public EntityBase clone() throws CloneNotSupportedException {
-        return (EntityBase) super.clone();
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (Objects.isNull(obj))
             return false;
